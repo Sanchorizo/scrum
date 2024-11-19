@@ -1,0 +1,19 @@
+.custom-navbar {
+  background-color: #ffffff;
+  border-bottom: 2px solid #007ad9;
+  color: #007ad9;
+
+  .p-menuitem-link {
+    color: #007ad9 !important;
+    font-weight: bold;
+
+    &:hover {
+      background-color: #007ad9 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  .p-menuitem-icon {
+    color: #007ad9 !important;
+  }
+}
