@@ -1,0 +1,28 @@
+<div class="container">
+  <form #textForm="ngForm" (ngSubmit)="ajouterTexte(textForm)">
+    <input
+      type="text"
+      name="inputText"
+      pInputText
+      required
+      minlength="1"
+      ngModel
+      placeholder="Entrez un texte"
+      class="input-field"
+    />
+    <button pButton type="submit" label="Ajouter" class="add-button"></button>
+  </form>
+  <div *ngFor="let text of savedTexts(); index as i" class="text-display">
+    <p-card>
+      <div class="card-content">
+        <p>{{ text }}</p>
+        <button
+          pButton
+          icon="pi pi-trash"
+          class="delete-button"
+          (click)="supprimerTexte(i)"
+        ></button>
+      </div>
+    </p-card>
+  </div>
+</div>
