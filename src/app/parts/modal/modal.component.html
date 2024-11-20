@@ -1,0 +1,10 @@
+<div class="modal-backdrop" (click)="onClose.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>{{ title }}</h2>
+    <p>{{ message }}</p>
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+      <button class="btn btn-danger" (click)="onConfirm.emit()">Confirm</button>
+      <button class="btn btn-primary" (click)="onClose.emit()">Cancel</button>
+    </div>
+  </div>
+</div>

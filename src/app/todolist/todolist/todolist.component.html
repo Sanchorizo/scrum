@@ -1,0 +1,59 @@
+<div style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+  <h1 style="margin-bottom: 2rem; font-size: 2.5rem; text-align: center;">
+    Scrum ToDoList
+  </h1>
+
+  <form [formGroup]="taskForm" (ngSubmit)="addTask()" style="margin-bottom: 2rem;">
+
+    <div style="display: flex; gap: 1rem;">
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Ajouter une tâche..."
+        style="flex: 1;"
+      />
+      <select formControlName="category">
+        <option value="todo">To Do</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="important">Important</option>
+      </select>
+      <button type="submit" class="btn btn-primary" [disabled]="!taskForm.valid">
+        Ajouter
+      </button>
+    </div>
+  </form>
+
+  <div class="tasks">
+    @for (task of tasks(); track task.id) {
+      <div class="task-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <input
+            type="checkbox"
+            [checked]="task.category === 'completed'"
+            (change)="toggleDoneStatus(task)"
+          />
+          <div>
+            <h3>{{ task.title }}</h3>
+            <span [style.color]="getCategoryColor(task.category)">
+                  {{ task.category }}
+                </span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary" (click)="editTask(task)">Modifié</button>
+            <button class="btn btn-danger" (click)="deleteTask(task)">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <app-modal
+    [title]="modalConfig().title"
+    [message]="modalConfig().message"
+    (onConfirm)="modalConfig().onConfirm()"
+    (onClose)="closeModal()"
+  />
+}
