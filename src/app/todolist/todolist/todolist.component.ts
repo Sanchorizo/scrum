@@ -2,13 +2,15 @@ import {Component, signal} from '@angular/core';
 import {ModalComponent} from '../../parts/modal/modal.component';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Task} from '../../model/task';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-todolist',
   standalone: true,
   imports: [
     ModalComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgForOf
   ],
   templateUrl: './todolist.component.html',
   styleUrl: './todolist.component.css'
@@ -20,13 +22,13 @@ export class TodolistComponent {
   modalConfig = signal<any>({});
   taskForm: FormGroup;
 
+
   constructor() {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
-      category: ['todo', Validators.required]
+      category: ['a faire', Validators.required]
     });
   }
-
   addTask() {
     if (this.taskForm.valid) {
       const newTask: Task = {
@@ -36,18 +38,18 @@ export class TodolistComponent {
       };
 
       this.tasks.update(tasks => [...tasks, newTask]);
-      this.taskForm.reset({ category: 'todo' });
+      this.taskForm.reset({ category: 'a faire' });
     }
   }
 
   editTask(task: Task): void {
-    const updatedTitle = prompt('Update task title:', task.title);
+    const updatedTitle = prompt('Mettre a jour le nom de la tache:', task.title);
     const updatedCategory = prompt(
-      'Modifié la catégorie (todo, in-progress, completed, important):',
+      'Modifié la catégorie (a faire, en cours, done, important):',
       task.category
-    ) as 'todo' | 'in-progress' | 'completed' | 'important';
+    ) as 'a faire' | 'en cours' | 'done' | 'important';
 
-    const validCategories: Task['category'][] = ['todo', 'in-progress', 'completed', 'important'];
+    const validCategories: Task['category'][] = ['a faire', 'en cours', 'done', 'important'];
     if (updatedTitle && updatedCategory && validCategories.includes(updatedCategory)) {
       this.tasks.update((currentTasks: Task[]) =>
         currentTasks.map((t: Task) =>
@@ -57,7 +59,7 @@ export class TodolistComponent {
         )
       );
     } else if (updatedCategory && !validCategories.includes(updatedCategory)) {
-      alert('Catégorie invalide veuillez utilisé : todo , in-progresse , completed ou important.');
+      alert('Catégorie invalide veuillez utilisé : a faire , en cours , done ou important.');
     }
   }
 
@@ -65,8 +67,8 @@ export class TodolistComponent {
 
   deleteTask(task: Task) {
     this.modalConfig.set({
-      title: 'Delete Task',
-      message: `Are you sure you want to delete "${task.title}"?`,
+      title: 'Supprimé la tâche',
+      message: `voulez vous vraiment supprimé :  "${task.title}"?`,
       onConfirm: () => {
         this.tasks.update(tasks => tasks.filter(t => t.id !== task.id));
         this.closeModal();
@@ -81,9 +83,9 @@ export class TodolistComponent {
 
   getCategoryColor(category: string): string {
     const colors = {
-      'todo': '--text-secondary',
-      'in-progress': '--warning',
-      'completed': '--success',
+      'a faire': '--text-secondary',
+      'en cours': '--warning',
+      'done': '--success',
       'important': '--danger'
     };
     const colorVariable = colors[category as keyof typeof colors];
@@ -97,13 +99,19 @@ export class TodolistComponent {
     this.tasks.update((currentTasks: Task[]) =>
       currentTasks.map((t: Task) =>
         t.id === task.id
-          ? this.ensureTask({ ...t, category: t.category === 'completed' ? 'todo' : 'completed' })
+          ? this.ensureTask({ ...t, category: t.category === 'done' ? 'a faire' : 'done' })
           : t
       )
     );
   }
 
+  getCategories(): Task['category'][] {
+    return ['a faire', 'en cours', 'done', 'important'];
+  }
 
+  tasksByCategory(category: Task['category']): Task[] {
+    return this.tasks().filter(task => task.category === category);
+  }
 
 
 }
